@@ -1,4 +1,4 @@
-https://michaelanot.github.io/GameList/games
+https://michaelanot.github.io/GameList
 
 # GameList
 
