@@ -105,7 +105,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>Supp</th>
     <td mat-cell *matCellDef="let row">
-      <button mat-icon-button color="warn" (click)="onDelete(row)" aria-label="Supprimer">
+      <button mat-icon-button color="warn" (click)="onDelete(row, $event)" aria-label="Supprimer">
         <mat-icon>delete</mat-icon>
       </button>
     </td>
@@ -113,7 +113,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   <ng-container matColumnDef="edit">
     <th mat-header-cell *matHeaderCellDef>Edit</th>
     <td mat-cell *matCellDef="let row">
-      <button mat-icon-button color="warn" (click)="onEdit(row)" aria-label="Modifier">
+      <button mat-icon-button color="warn" (click)="onEdit(row, $event)" aria-label="Modifier">
         <mat-icon>edit</mat-icon>
       </button>
     </td>
@@ -211,7 +211,10 @@ export class GameTableComponent {
     return all.slice(0, count);
   });
   onSort(s: Sort) { this.sort.set(s); }
-  onEdit(row: Game) { this.router.navigate(['/games', row.id]); }
+  onEdit(row: Game, event?: Event) {
+    event?.stopPropagation();
+    this.router.navigate(['/games', row.id]);
+  }
 
   ngAfterViewInit() {
     // plus de paginator
@@ -288,7 +291,8 @@ export class GameTableComponent {
     }
   }
 
-  async onDelete(row: Game) {
+  async onDelete(row: Game, event?: Event) {
+    event?.stopPropagation();
     const ok = confirm(`Supprimer "${row.name}" ?`);
     if (!ok) return;
     await this.repo.remove(row.id);
