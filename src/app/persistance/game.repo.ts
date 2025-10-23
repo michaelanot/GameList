@@ -6,6 +6,26 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable({ providedIn: 'root' }) // ✅ important pour l'injection
 export class GameRepo {
+  async importFromObject(arr: any[]): Promise<{ ok: number; fail: number }> {
+    let ok = 0, fail = 0;
+    for (const g of arr) {
+      try {
+        let jacket: Blob | null = null;
+        if (typeof g.jacket === 'string' && g.jacket.startsWith('data:')) {
+          jacket = this.base64ToBlob(g.jacket);
+        }
+        await db.games.put({
+          ...g,
+          jacket,
+          jacketUrl: g.jacketUrl ?? null,
+        });
+        ok++;
+      } catch {
+        fail++;
+      }
+    }
+    return { ok, fail };
+  }
   list = signal<Game[]>([]);
   loading = signal(false);
 
@@ -15,7 +35,7 @@ export class GameRepo {
     finally { this.loading.set(false); }
   }
 
-  async create(partial: Omit<Game,'id'|'createdAt'|'updatedAt'>) {
+  async create(partial: Omit<Game, 'id' | 'createdAt' | 'updatedAt'>) {
     const now = Date.now();
     const game: Game = { id: uuid(), createdAt: now, updatedAt: now, ...partial };
     await db.games.add(game);
@@ -33,8 +53,8 @@ export class GameRepo {
   async remove(id: string) {
     await db.games.delete(id);
     await this.refresh();
-    }
-    
+  }
+
   // ------------------------------------------------------------------------------------
   // 🔹 EXPORT : convertit les Blobs en Base64 pour que le JSON soit complet et portable
   // ------------------------------------------------------------------------------------

@@ -272,28 +272,28 @@ export class GameUpsertComponent {
     await this.repo.remove(this.gameId!);
     this.snack.open('Jeu supprimé', 'OK', { duration: 1800 });
     this.router.navigate(['/games']);
-    }
-    
-    onPaste(event: ClipboardEvent) {
-  const items = event.clipboardData?.items;
-  if (!items) return;
+  }
 
-  for (const item of items) {
-    if (item.type.startsWith('image/')) {
-      const blob = item.getAsFile();
-      if (blob) {
-        this.newJacket = blob;
-        this.removeJacket = false;
-        this.jacketType.set('image');
-        this.setPreviewFromBlob(blob);
-        this.form.patchValue({ jacketUrl: null });
-        event.preventDefault();
-        this.snack.open('Image collée avec succès 🎨', 'OK', { duration: 2000 });
-        break;
+  onPaste(event: ClipboardEvent) {
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const blob = item.getAsFile();
+        if (blob) {
+          this.newJacket = blob;
+          this.removeJacket = false;
+          this.jacketType.set('image');
+          this.setPreviewFromBlob(blob);
+          this.form.patchValue({ jacketUrl: null });
+          event.preventDefault();
+          this.snack.open('Image collée avec succès 🎨', 'OK', { duration: 2000 });
+          break;
+        }
       }
     }
   }
-}
 
   cancel() { this.location.back(); }
 }

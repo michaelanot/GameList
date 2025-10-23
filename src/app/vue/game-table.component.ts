@@ -1,5 +1,5 @@
-// src/app/games/game-table.component.ts
-import { Component, ViewChild, inject, signal, computed } from '@angular/core';
+﻿// src/app/games/game-table.component.ts
+import { Component, ViewChild, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
@@ -18,16 +18,16 @@ import { GamePreviewDialog } from './game-preview.dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-    selector: 'app-game-table',
-    standalone: true,
-    imports: [
-        CommonModule,
-        MatTableModule, MatSortModule, MatPaginatorModule,
-        MatFormFieldModule, MatInputModule, MatSelectModule,
-        MatButtonModule, MatIconModule, MatSnackBarModule,   // 👈
-        CurrencyPipe, MatDialogModule
-    ],
-    template: `
+  selector: 'app-game-table',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatButtonModule, MatIconModule, MatSnackBarModule,   // 👈
+    CurrencyPipe, MatDialogModule
+  ],
+  template: `
 <div class="toolbar">
   <!-- filtres existants -->
   <mat-form-field appearance="outline">
@@ -43,6 +43,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     </mat-select>
   </mat-form-field>
 
+
   <!-- ✅ nouveaux boutons -->
   <button mat-stroked-button color="primary" (click)="exportJson()">
     <mat-icon>download</mat-icon> Exporter
@@ -53,8 +54,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
   </button>
   <input #fileInput type="file" accept=".json" hidden (change)="importJson($event)">
 
+  <!-- ✅ bouton chargement depuis Git -->
+  <button mat-stroked-button color="warn" (click)="loadFromGit()">
+    <mat-icon>cloud_download</mat-icon> Chargement depuis Git
+  </button>
+
 </div>
 
+<div class="table-scroll" (scroll)="onTableScroll($event)" style="max-height:60vh;overflow:auto">
 <table mat-table [dataSource]="paged()" matSort (matSortChange)="onSort($event)" class="mat-elevation-z1">
     <ng-container matColumnDef="jacket">
     <th mat-header-cell *matHeaderCellDef>Jaquette</th>
@@ -90,83 +97,136 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
   <!-- ✅ Colonne Actions -->
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <th mat-header-cell *matHeaderCellDef>Supp</th>
     <td mat-cell *matCellDef="let row">
       <button mat-icon-button color="warn" (click)="onDelete(row)" aria-label="Supprimer">
         <mat-icon>delete</mat-icon>
       </button>
     </td>
   </ng-container>
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef>Edit</th>
+    <td mat-cell *matCellDef="let row">
+      <button mat-icon-button color="warn" (click)="onEdit(row)" aria-label="Modifier">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </td>
+  </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="cols"></tr>
-  <tr mat-row *matRowDef="let row; columns: cols;" (click)="preview(row)" (dblclick)="edit(row)"></tr>
+  <tr mat-row *matRowDef="let row; columns: cols;" (click)="preview(row)"></tr>
 </table>
 
-<mat-paginator [length]="filtered().length" [pageSize]="10" [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+
+</div>
   `,
-    styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} table{width:100%}`]
+  styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} table{width:100%}`]
 })
 export class GameTableComponent {
-    private repo = inject(GameRepo);
-    private router = inject(Router);
-    private snack = inject(MatSnackBar); // 👈
-    private dialog = inject(MatDialog);
-    
-    consoles = CONSOLES;
-    cols = ['jacket', 'name', 'console', 'priceBuy', 'priceSell', 'actions']; // 👈
+  private repo = inject(GameRepo);
+  private router = inject(Router);
+  private snack = inject(MatSnackBar); // 👈
+  private dialog = inject(MatDialog);
 
-    globalFilter = signal('');
-    consoleFilter = signal<string>('');
-    sort = signal<Sort | null>(null);
-    // ✅ Cache pour les URLs blob
-    private blobUrlCache = new Map<string, string>();
+  consoles = CONSOLES;
+  cols = ['jacket', 'name', 'console', 'priceBuy', 'priceSell', 'actions', 'edit']; // 👈
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    pageIndex = signal(0);
-    pageSize = signal(10);
-    
-    constructor() {
-        this.repo.refresh();
+  globalFilter = signal('');
+  consoleFilter = signal<string>('');
+  sort = signal<Sort | null>(null);
+  // ✅ Cache pour les URLs blob
+  private blobUrlCache = new Map<string, string>();
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  pageIndex = signal(0);
+  pageSize = signal(20); // lot plus grand pour infinite scroll
+  visibleCount = signal(20);
+
+  constructor() {
+    this.repo.refresh().catch(() => {
+      this.snack.open('Impossible de charger les jeux.', 'OK', { duration: 2500 });
+    });
+
+    // Reinitialise la liste affichee a chaque changement de filtre ou tri
+    let lastFilter = this.globalFilter();
+    let lastConsole = this.consoleFilter();
+    let lastSort = this.sort();
+    effect(() => {
+      const curFilter = this.globalFilter();
+      const curConsole = this.consoleFilter();
+      const curSort = this.sort();
+      if (curFilter !== lastFilter || curConsole !== lastConsole || curSort !== lastSort) {
+        lastFilter = curFilter;
+        lastConsole = curConsole;
+        lastSort = curSort;
+        this.resetVisibleCount();
+      }
+    });
+
+    effect(() => {
+      this.repo.list();
+      this.resetVisibleCount();
+    });
+  }
+
+  resetVisibleCount() {
+    this.visibleCount.set(this.pageSize());
+  }
+  filtered = computed(() => {
+    const q = this.globalFilter().toLowerCase().trim();
+    const c = this.consoleFilter();
+    return this.repo.list().filter(g => {
+      const matchQ = !q || [g.name, g.console].some(x => x?.toLowerCase().includes(q));
+      const matchC = !c || g.console.toLowerCase() === c.toLowerCase();
+      return matchQ && matchC;
+    });
+  });
+
+  sorted = computed(() => {
+    const s = this.sort();
+    const data = [...this.filtered()];
+    if (!s || !s.active || !s.direction) return data;
+    const dir = s.direction === 'asc' ? 1 : -1;
+    return data.sort((a, b) => {
+      const av = (a as any)[s.active], bv = (b as any)[s.active];
+      return (av > bv ? 1 : av < bv ? -1 : 0) * dir;
+    });
+  });
+
+  paged = computed(() => {
+    const all = this.sorted();
+    const count = Math.min(this.visibleCount(), all.length);
+    return all.slice(0, count);
+  });
+  onSort(s: Sort) { this.sort.set(s); }
+  onEdit(row: Game) { this.router.navigate(['/games', row.id]); }
+
+  ngAfterViewInit() {
+    // plus de paginator
+  }
+
+  /**
+   * Gestion du scroll pour infinite scroll
+   */
+  onTableScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 40) {
+      this.loadMoreRows();
     }
+  }
 
-    filtered = computed(() => {
-        const q = this.globalFilter().toLowerCase().trim();
-        const c = this.consoleFilter();
-        return this.repo.list().filter(g => {
-            const matchQ = !q || [g.name, g.console].some(x => x?.toLowerCase().includes(q));
-            const matchC = !c || g.console === c;
-            return matchQ && matchC;
-        });
-    });
-
-    sorted = computed(() => {
-        const s = this.sort();
-        const data = [...this.filtered()];
-        if (!s || !s.active || !s.direction) return data;
-        const dir = s.direction === 'asc' ? 1 : -1;
-        return data.sort((a, b) => {
-            const av = (a as any)[s.active], bv = (b as any)[s.active];
-            return (av > bv ? 1 : av < bv ? -1 : 0) * dir;
-        });
-    });
-
-    paged = computed(() => {
-        const list = this.sorted(); // ou ta data source triée
-        const start = this.pageIndex() * this.pageSize();
-        return list.slice(start, start + this.pageSize());
-    });
-
-    onSort(s: Sort) { this.sort.set(s); }
-    edit(row: Game) { this.router.navigate(['/games', row.id]); }
-
-    ngAfterViewInit() {
-        this.paginator.page.subscribe(e => {
-            this.pageIndex.set(e.pageIndex);
-            this.pageSize.set(e.pageSize);
-        });
+  /**
+   * Charge le prochain lot de jeux
+   */
+  loadMoreRows() {
+    const allRows = this.sorted();
+    const current = this.visibleCount();
+    const nextCount = Math.min(allRows.length, current + this.pageSize());
+    if (nextCount > current) {
+      this.visibleCount.set(nextCount);
     }
-
- /** Retourne une URL stable (cached) pour chaque jaquette */
+  }
+  /** Retourne une URL stable (cached) pour chaque jaquette */
   getJacketSrc(row: Game): string | null {
     // Si c’est une URL simple
     if (row.jacketUrl) return row.jacketUrl;
@@ -183,44 +243,65 @@ export class GameTableComponent {
     }
 
     return null;
-    }
-    
-      preview(row: Game) {
-        this.dialog.open(GamePreviewDialog, {
-        data: {
-            name: row.name,
-            console: row.console,
-            jacket: row.jacket ?? null,
-            jacketUrl: row.jacketUrl ?? null
-        },
-        maxWidth: '90vw',
-        panelClass: 'preview-dialog'
-        });
-    }
-    async onDelete(row: Game) {
-        const ok = confirm(`Supprimer "${row.name}" ?`);
-        if (!ok) return;
-        await this.repo.remove(row.id);
-        this.snack.open('Jeu supprimé', 'OK', { duration: 1800 });
-        // pas besoin d'appeler refresh ici si remove() le fait déjà
-    }
- 
-    // ----- EXPORT / IMPORT JSON -----
-    async exportJson() {
-        const blob = await this.repo.exportAll();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'games-export.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    }
+  }
 
-    async importJson(event: Event) {
-        const file = (event.target as HTMLInputElement).files?.[0];
-        if (!file) return;
-
-        const result = await this.repo.importJson(file);
-        alert(`Import terminé : ${result.ok} jeux importés, ${result.fail} erreurs.`);
+  preview(row: Game) {
+    this.dialog.open(GamePreviewDialog, {
+      data: {
+        name: row.name,
+        console: row.console,
+        jacket: row.jacket ?? null,
+        jacketUrl: row.jacketUrl ?? null
+      },
+      maxWidth: '90vw',
+      panelClass: 'preview-dialog'
+    });
+  }
+  /**
+   * Charge un fichier JSON du projet (ex: public/games.json) et l'importe comme data
+   */
+  async loadFromGit() {
+    try {
+      // Chemin du fichier à charger (adapter si besoin)
+      const response = await fetch('assets/games-export.json');
+      if (!response.ok) throw new Error('Fichier introuvable');
+      const json = await response.json();
+      // On suppose que repo.importFromObject accepte un tableau d'objets
+      const result = await this.repo.importFromObject(json);
+      this.snack.open(`Chargement terminé : ${result.ok} jeux importés, ${result.fail} erreurs.`, 'OK', { duration: 2500 });
+    } catch (e: any) {
+      this.snack.open('Erreur lors du chargement Git : ' + e.message, 'OK', { duration: 2500 });
     }
+  }
+
+  async onDelete(row: Game) {
+    const ok = confirm(`Supprimer "${row.name}" ?`);
+    if (!ok) return;
+    await this.repo.remove(row.id);
+    this.snack.open('Jeu supprimé', 'OK', { duration: 1800 });
+    // pas besoin d'appeler refresh ici si remove() le fait déjà
+  }
+
+  // ----- EXPORT / IMPORT JSON -----
+  async exportJson() {
+    const blob = await this.repo.exportAll();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'games-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async importJson(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const result = await this.repo.importJson(file);
+    alert(`Import terminé : ${result.ok} jeux importés, ${result.fail} erreurs.`);
+  }
 }
+
+
+
+
