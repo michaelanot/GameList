@@ -1,4 +1,4 @@
-﻿// src/app/games/game-table.component.ts
+// src/app/games/game-table.component.ts
 import { Component, ViewChild, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -16,6 +16,7 @@ import { GameRepo } from '../persistance/game.repo';
 import { CONSOLES, Game } from '../model/game.model';
 import { GamePreviewDialog } from './game-preview.dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-game-table',
@@ -25,7 +26,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule, MatSelectModule,
     MatButtonModule, MatIconModule, MatSnackBarModule,   // 👈
-    CurrencyPipe, MatDialogModule
+    CurrencyPipe, MatDialogModule, MatProgressSpinnerModule
   ],
   template: `
 <div class="toolbar">
@@ -59,6 +60,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     <mat-icon>cloud_download</mat-icon> Chargement depuis Git
   </button>
 
+</div>
+
+<div class="table-meta">
+  <span>Affichés {{paged().length}} / {{filtered().length}} jeux</span>
+  <mat-progress-spinner *ngIf="isLoading()" diameter="20" strokeWidth="3" mode="indeterminate"></mat-progress-spinner>
 </div>
 
 <div class="table-scroll" (scroll)="onTableScroll($event)" style="max-height:60vh;overflow:auto">
@@ -120,7 +126,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 </div>
   `,
-  styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} table{width:100%}`]
+  styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} .table-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;color:#555} table{width:100%}`]
 })
 export class GameTableComponent {
   private repo = inject(GameRepo);
@@ -141,11 +147,14 @@ export class GameTableComponent {
   pageIndex = signal(0);
   pageSize = signal(20); // lot plus grand pour infinite scroll
   visibleCount = signal(20);
+  isLoading = computed(() => this.repo.loading());
 
   constructor() {
-    this.repo.refresh().catch(() => {
-      this.snack.open('Impossible de charger les jeux.', 'OK', { duration: 2500 });
-    });
+    this.repo.refresh()
+      .then(() => this.resetVisibleCount())
+      .catch(() => {
+        this.snack.open('Impossible de charger les jeux.', 'OK', { duration: 2500 });
+      });
 
     // Reinitialise la liste affichee a chaque changement de filtre ou tri
     let lastFilter = this.globalFilter();
@@ -164,8 +173,11 @@ export class GameTableComponent {
     });
 
     effect(() => {
-      this.repo.list();
-      this.resetVisibleCount();
+      const games = this.repo.list();
+      void games;
+      if (!this.isLoading()) {
+        this.resetVisibleCount();
+      }
     });
   }
 
@@ -210,6 +222,7 @@ export class GameTableComponent {
    */
   onTableScroll(event: Event) {
     const target = event.target as HTMLElement;
+    if (this.isLoading()) return;
     if (target.scrollTop + target.clientHeight >= target.scrollHeight - 40) {
       this.loadMoreRows();
     }
@@ -219,6 +232,7 @@ export class GameTableComponent {
    * Charge le prochain lot de jeux
    */
   loadMoreRows() {
+    if (this.isLoading()) return;
     const allRows = this.sorted();
     const current = this.visibleCount();
     const nextCount = Math.min(allRows.length, current + this.pageSize());
