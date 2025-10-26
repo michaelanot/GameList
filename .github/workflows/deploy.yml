@@ -26,8 +26,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
+
       - name: Remove .npmrc if exists
         run: rm -f $HOME/.npmrc .npmrc
+
+      - name: Force public npm registry
+        run: npm config set registry https://registry.npmjs.org/
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
