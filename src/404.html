@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirection…</title>
+    <meta http-equiv="refresh" content="0; url=/GameList/">
+    <script>
+      // Redirection JS pour GitHub Pages SPA
+      (function() {
+        var l = window.location;
+        var base = '/GameList/'; // Adapter si besoin
+        if (l.pathname.startsWith(base)) {
+          var newUrl = base + '#'+ l.pathname.substr(base.length) + l.search + l.hash;
+          window.location.replace(newUrl);
+        } else {
+          window.location.replace(base);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <h1>Redirection…</h1>
+    <p>Si vous n’êtes pas redirigé automatiquement, <a href="/GameList/">cliquez ici</a>.</p>
+  </body>
+</html>
