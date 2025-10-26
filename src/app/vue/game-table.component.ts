@@ -82,8 +82,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     </ng-container>
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
-    <td mat-cell *matCellDef="let row">{{row.name}}</td>
+  <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
+  <td mat-cell *matCellDef="let row">{{ capitalize(row.name) }}</td>
   </ng-container>
 
   <ng-container matColumnDef="console">
@@ -129,6 +129,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} .table-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;color:#555} table{width:100%}`]
 })
 export class GameTableComponent {
+  capitalize(str: string): string {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
   private repo = inject(GameRepo);
   private router = inject(Router);
   private snack = inject(MatSnackBar); // 👈
