@@ -26,6 +26,9 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
+      - name: Remove .npmrc if exists
+        run: rm -f $HOME/.npmrc .npmrc
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
