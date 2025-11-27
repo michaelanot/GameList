@@ -126,7 +126,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 </div>
   `,
-  styles: [`.toolbar{display:flex;gap:12px;align-items:center;margin:8px 0} .table-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;color:#555} table{width:100%}`]
+  styles: [`
+    .toolbar{display:flex;gap:12px;align-items:center;margin:8px 0;flex-wrap:wrap}
+    .table-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;color:#555}
+    table{width:100%}
+    @media (max-width: 768px) {
+      .toolbar{gap:8px}
+      .toolbar mat-form-field{flex:1 1 100%;min-width:0}
+      .toolbar button{flex:1 1 calc(50% - 4px);min-width:0;font-size:12px;padding:0 8px}
+      .toolbar button mat-icon{font-size:18px;width:18px;height:18px}
+    }
+  `]
 })
 export class GameTableComponent {
   capitalize(str: string): string {
