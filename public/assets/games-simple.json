@@ -1,0 +1,326 @@
+[
+    {
+        "name":  "Donkey kong",
+        "console":  "NES"
+    },
+    {
+        "name":  "Tintin au Tibet",
+        "console":  "SNES"
+    },
+    {
+        "name":  "F1",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Donkey Kong Country",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Taz",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Altered beast",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Prince of persia",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Tiny toon adventure",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Mickey mania",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "killer instinct",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Medal of honor",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "Mario kart double dash",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "Aladdin",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Super Mario World",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Donald in maui",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Mickey : castle of illusion",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Sparkster",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Power piggs",
+        "console":  "SNES"
+    },
+    {
+        "name":  "eartworm jim 2",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Mickey : world of illusion",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "plok",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Ducktales",
+        "console":  "NES"
+    },
+    {
+        "name":  "battletoads in battlemaniacs",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Flashback",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Jungle book",
+        "console":  "NES"
+    },
+    {
+        "name":  "X-men",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Tetrie",
+        "console":  "NES"
+    },
+    {
+        "name":  "The revenge of shinobi",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Tale spin",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "The Simpsons: Bart\u0027s Nightmare",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Astérix",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Marble madness",
+        "console":  "NES"
+    },
+    {
+        "name":  "Aero the acro bat",
+        "console":  "SNES"
+    },
+    {
+        "name":  "mortal kombat 2",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Bubsy",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Astérix \u0026 Obélix",
+        "console":  "SNES"
+    },
+    {
+        "name":  "r-type",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Spiderman vs xmen",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Mega man",
+        "console":  "NES"
+    },
+    {
+        "name":  "Batman return",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Pinocchio",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Spiderman",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Axelay",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Donkey Kong Country 2: Diddy\u0027s Kong Quest",
+        "console":  "SNES"
+    },
+    {
+        "name":  "bomberman",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Rocket knight adventures",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Ardy Lighfoot",
+        "console":  "SNES"
+    },
+    {
+        "name":  "the great circus mystery",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Sonic \u0026 knuckles",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Goof Troop",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Le roi lion",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Worms",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Kirby\u0027s adventure",
+        "console":  "NES"
+    },
+    {
+        "name":  "Star wars 2",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "super mario kart",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Super smash bros",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "Super Mario All-Stars",
+        "console":  "SNES"
+    },
+    {
+        "name":  "The ottifants",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Low G man",
+        "console":  "NES"
+    },
+    {
+        "name":  "spitou",
+        "console":  "SNES"
+    },
+    {
+        "name":  "mega man x",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Gynoug: wings of war",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Golden axe",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Sonic the hedgehog",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Super mario bros / Duck hunt",
+        "console":  "NES"
+    },
+    {
+        "name":  "Sonic 2",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Donkey kong country 3",
+        "console":  "SNES"
+    },
+    {
+        "name":  "007",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "Adventure island 2",
+        "console":  "NES"
+    },
+    {
+        "name":  "Les schtroumpfs",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Splinter Cell",
+        "console":  "GameCube"
+    },
+    {
+        "name":  "Quackshot",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "super Street Fighter II",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Pagemaster",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Sonic 3",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Time lord",
+        "console":  "NES"
+    },
+    {
+        "name":  "Kirby\u0027s fun pak",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Mario paint",
+        "console":  "SNES"
+    },
+    {
+        "name":  "mr nutz",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Teenage mutan heros Tortue Ninja",
+        "console":  "NES"
+    },
+    {
+        "name":  "earthworm jim",
+        "console":  "SNES"
+    }
+]
