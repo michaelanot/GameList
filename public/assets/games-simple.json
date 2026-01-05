@@ -8,11 +8,23 @@
         "console":  "SNES"
     },
     {
+        "name":  "Boogerman",
+        "console":  "MégaDrive"
+    },
+    {
+        "name":  "Spiderman vs xmen",
+        "console":  "SNES"
+    },
+    {
         "name":  "F1",
         "console":  "MégaDrive"
     },
     {
         "name":  "Donkey Kong Country",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Jurassic park",
         "console":  "SNES"
     },
     {
@@ -32,8 +44,24 @@
         "console":  "MégaDrive"
     },
     {
+        "name":  "Super Castlevania 4",
+        "console":  "SNES"
+    },
+    {
+        "name":  "banjo kazooie",
+        "console":  "N64"
+    },
+    {
+        "name":  "cool spot",
+        "console":  "SNES"
+    },
+    {
         "name":  "Mickey mania",
         "console":  "MégaDrive"
+    },
+    {
+        "name":  "pagemaster",
+        "console":  "SNES"
     },
     {
         "name":  "killer instinct",
@@ -60,8 +88,20 @@
         "console":  "MégaDrive"
     },
     {
+        "name":  "Ardy lightfoot",
+        "console":  "SNES"
+    },
+    {
         "name":  "Mickey : castle of illusion",
         "console":  "MégaDrive"
+    },
+    {
+        "name":  "Mario paint",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Kirby\u0027s fun pak",
+        "console":  "SNES"
     },
     {
         "name":  "Sparkster",
@@ -69,6 +109,14 @@
     },
     {
         "name":  "Power piggs",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Le roi lion",
+        "console":  "SNES"
+    },
+    {
+        "name":  "Donkey kong country 3",
         "console":  "SNES"
     },
     {
@@ -152,8 +200,16 @@
         "console":  "SNES"
     },
     {
+        "name":  "Boogerman",
+        "console":  "MégaDrive"
+    },
+    {
         "name":  "Mega man",
         "console":  "NES"
+    },
+    {
+        "name":  "Sparkster",
+        "console":  "SNES"
     },
     {
         "name":  "Batman return",
@@ -166,6 +222,10 @@
     {
         "name":  "Spiderman",
         "console":  "MégaDrive"
+    },
+    {
+        "name":  "Power piggs",
+        "console":  "SNES"
     },
     {
         "name":  "Axelay",
@@ -188,12 +248,20 @@
         "console":  "SNES"
     },
     {
+        "name":  "Dynamite Headdy",
+        "console":  "MégaDrive"
+    },
+    {
         "name":  "the great circus mystery",
         "console":  "SNES"
     },
     {
         "name":  "Sonic \u0026 knuckles",
         "console":  "MégaDrive"
+    },
+    {
+        "name":  "crash dummies",
+        "console":  "SNES"
     },
     {
         "name":  "Goof Troop",
@@ -240,6 +308,10 @@
         "console":  "SNES"
     },
     {
+        "name":  "Ristar",
+        "console":  "MégaDrive"
+    },
+    {
         "name":  "mega man x",
         "console":  "SNES"
     },
@@ -280,6 +352,10 @@
         "console":  "MégaDrive"
     },
     {
+        "name":  "castlevania vampire\u0027s kiss",
+        "console":  "SNES"
+    },
+    {
         "name":  "Splinter Cell",
         "console":  "GameCube"
     },
@@ -306,6 +382,10 @@
     {
         "name":  "Kirby\u0027s fun pak",
         "console":  "SNES"
+    },
+    {
+        "name":  "donkey kong 64",
+        "console":  "N64"
     },
     {
         "name":  "Mario paint",
